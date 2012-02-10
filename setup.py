@@ -15,6 +15,7 @@ setup(
     url = "https://github.com/axiak/fuzzyset/",
     packages=['fuzzyset'],
     long_description=read('README.rst'),
+    install_requires=['python-levenshtein'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: BSD License",

@@ -1,6 +1,7 @@
 import re
 import math
 import collections
+import Levenshtein
 
 _non_word_re = re.compile(r'[^\w, ]+')
 
@@ -44,6 +45,9 @@ class FuzzySet(object):
         results = [(match_score / (norm * self.items[idx][0]), self.items[idx][1])
                    for idx, match_score in matches.items()]
         results.sort(reverse=True)
+        results = [(Levenshtein.distance(matched, value), matched)
+                   for _, matched in results[:50]]
+        results.sort()
         if results:
             return [result for result in results
                     if result[0] == results[0][0]]
@@ -67,14 +71,16 @@ def _iterate_grams(value, gram_size=2):
     for i in range(len(simplified) - gram_size + 1):
         yield simplified[i:i + gram_size]
 
-if __name__ == '__main__':
-    with open('./cities') as input_file:
+def _interactive_test():
+    import gzip
+    with gzip.GzipFile('./cities.gz') as input_file:
         f = FuzzySet((line.strip() for line in input_file), gram_size=2)
 
-    while False:
+    while True:
         town = raw_input("Enter town name: ")
         print f[town]
 
+def _other_test():
     with open('./origin_cities') as cities:
         for line in cities:
             result = f.get(line.strip())
@@ -82,3 +88,7 @@ if __name__ == '__main__':
                 print "{}: Could not find".format(line.strip())
             elif isinstance(result, list):
                 print "{}: {}".format(line.strip(), result)
+
+if __name__ == '__main__':
+    _interactive_test()
+    #_other_test()

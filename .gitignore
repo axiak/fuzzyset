@@ -1,6 +1,8 @@
 *.egg-info
+/dist/
 /lib/
 /bin/
 /include/
 *~
 *.pyc
+*#*
