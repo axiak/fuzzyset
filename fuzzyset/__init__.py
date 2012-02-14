@@ -110,4 +110,5 @@ def _other_test():
                 print "{}: {}".format(line.strip(), result)
 
 if __name__ == '__main__':
+    pass
     #_other_test()
