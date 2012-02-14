@@ -76,7 +76,7 @@ Retrieving
 ~~~~~~~~~~
 
 To search the data structure, we take the n-grams of the query string and perform a reverse index look up. To illustrate,
-let's consider looking up ``'michael'`` in our ficticious set containing ``'michaelich'`` where the ``gram_size_upper``
+let's consider looking up ``'michael'`` in our fictitious set containing ``'michaelich'`` where the ``gram_size_upper``
 and ``gram_size_lower`` parameters are default (3 and 2 respectively).
 
 We begin by considering first all trigrams (the value of ``gram_size_upper``). Those grams are::
