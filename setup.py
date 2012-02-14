@@ -28,8 +28,8 @@ if '--pure-python' not in sys.argv:
         ext_files.append('fuzzyset/cfuzzyset.pyx')
         extra_kwargs['cmdclass'] = {'build_ext': build_ext}
         try:
-            os.unlnk(os.path.join(here, 'fuzzyset', 'cfuzzyset.c'))
-            os.unlnk(os.path.join(here, 'cfuzzyset.so'))
+            os.unlink(os.path.join(here, 'fuzzyset', 'cfuzzyset.c'))
+            os.unlink(os.path.join(here, 'cfuzzyset.so'))
         except:
             pass
     except ImportError:
@@ -46,7 +46,7 @@ if '--cython' in sys.argv:
 
 setup(
     name = "fuzzyset",
-    version = "0.0.2",
+    version = "0.0.3",
     author = "Michael Axiak",
     author_email = "mike@axiak.net",
     description = ("A simple python fuzzyset implementation."),

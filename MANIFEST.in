@@ -1,0 +1,5 @@
+include README.rst
+include cities.gz
+recursive-include fuzzyset *
+recursive-include tests *
+recursive-include fake-pyrex *
