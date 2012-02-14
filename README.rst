@@ -102,6 +102,11 @@ the failure to match will be quick). Bigram searching will always be slower beca
 .. _cosine similarity: http://en.wikipedia.org/wiki/Cosine_similarity
 
 
+Install
+=======
+
+    ``easy_install fuzzyset``
+
 
 License
 =======
