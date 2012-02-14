@@ -3,6 +3,7 @@
 import re
 import math
 import cython
+import operator
 import collections
 import Levenshtein
 
@@ -121,12 +122,12 @@ cdef class cFuzzySet:
         # cosine similarity
         cdef list results = [(match_score / items[idx][0], items[idx][1])
                              for idx, match_score in matches.items()]
-        results.sort(reverse=True)
+        results.sort(reverse=True, key=operator.itemgetter(0))
 
         if self.use_levenshtein:
             results = [(distance(matched, value), matched)
                        for _, matched in results[:50]]
-            results.sort(reverse=True)
+            results.sort(reverse=True, key=operator.itemgetter(0))
 
             return [result for result in results
                     if result[0] == results[0][0]]

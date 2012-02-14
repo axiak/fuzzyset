@@ -34,7 +34,7 @@ def run_tests():
         for varname, name, obj in structures:
             t = timeit.Timer('test(length, {0}, test_data)'.format(varname),
                              'from __main__ import length, test, {0}, test_data'.format(varname))
-            results[varname].append(t.timeit(number=num_tests))
+            results[varname].append(t.timeit(number=num_tests) * 100)
 
     table = texttable.Texttable()
     if len(structures) <= len(lengths):
@@ -65,12 +65,12 @@ def build_structures():
         ('d', 'cFuzzySet (no leven)', cfuzzyset.cFuzzySet()),
         )
     ref = {}
-    with gzip.GzipFile(os.path.join(here, '..', 'cities.gz')) as input_file:
-        for line in input_file:
-            line = line.rstrip()
-            for _, _, structure in opts:
-                structure.add(line)
-            ref[line] = line
+    input_file = gzip.GzipFile(os.path.join(here, '..', 'cities.gz'))
+    for line in input_file:
+        line = line.rstrip()
+        for _, _, structure in opts:
+            structure.add(line)
+        ref[line] = line
 
     return opts + (('ref', 'reference (dict)', ref),)
 

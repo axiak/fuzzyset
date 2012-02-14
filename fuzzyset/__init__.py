@@ -1,5 +1,6 @@
 import re
 import math
+import operator
 import collections
 import Levenshtein
 
@@ -67,12 +68,12 @@ class FuzzySet(object):
         # cosine similarity
         results = [(match_score / (norm * items[idx][0]), items[idx][1])
                    for idx, match_score in matches.items()]
-        results.sort(reverse=True)
+        results.sort(reverse=True, key=operator.itemgetter(0))
 
         if self.use_levenshtein:
             results = [(_distance(matched, value), matched)
                        for _, matched in results[:50]]
-            results.sort(reverse=True)
+            results.sort(reverse=True, key=operator.itemgetter(0))
 
         return [result for result in results
                 if result[0] == results[0][0]]
@@ -92,7 +93,10 @@ def _distance(str1, str2):
         return 1 - float(distance) / len(str2)
 
 def _gram_counter(value, gram_size=2):
-    return collections.Counter(_iterate_grams(value, gram_size))
+    result = collections.defaultdict(int)
+    for value in _iterate_grams(value, gram_size):
+        result[value] += 1
+    return result
 
 def _iterate_grams(value, gram_size=2):
     simplified = '-' + _non_word_re.sub('', value.lower()) + '-'
