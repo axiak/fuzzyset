@@ -1,11 +1,12 @@
 # encoding: utf-8
-# cython: profile=True
 
 import re
 import math
 import cython
 import collections
 import Levenshtein
+
+__version__ = (0, 0, 2)
 
 from libc.math cimport sqrt
 

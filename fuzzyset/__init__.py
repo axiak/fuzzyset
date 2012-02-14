@@ -3,6 +3,8 @@ import math
 import collections
 import Levenshtein
 
+__version__ = (0, 0, 2)
+
 _non_word_re = re.compile(r'[^\w, ]+')
 
 __all__ = ('FuzzySet',)
