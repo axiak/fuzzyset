@@ -22,7 +22,7 @@ if '--pure-python' not in sys.argv:
 
 from setuptools import setup, Extension
 
-if '--pure-python' not in sys.argv:
+if '--pure-python' not in sys.argv and 'sdist' not in sys.argv:
     try:
         from Cython.Distutils import build_ext
         ext_files.append('fuzzyset/cfuzzyset.pyx')
@@ -38,7 +38,7 @@ if '--pure-python' not in sys.argv:
         if '--cython' in sys.argv:
             raise
     extra_kwargs['ext_modules'] = [Extension('cfuzzyset', ext_files)]
-else:
+elif '--pure-python' in sys.argv:
     sys.argv.remove('--pure-python')
 
 if '--cython' in sys.argv:
@@ -46,7 +46,7 @@ if '--cython' in sys.argv:
 
 setup(
     name = "fuzzyset",
-    version = "0.0.3",
+    version = "0.0.4",
     author = "Michael Axiak",
     author_email = "mike@axiak.net",
     description = ("A simple python fuzzyset implementation."),

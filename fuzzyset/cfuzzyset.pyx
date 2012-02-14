@@ -6,7 +6,7 @@ import cython
 import collections
 import Levenshtein
 
-__version__ = (0, 0, 3)
+__version__ = (0, 0, 4)
 
 from libc.math cimport sqrt
 
