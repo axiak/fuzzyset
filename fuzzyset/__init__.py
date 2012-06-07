@@ -88,6 +88,12 @@ class FuzzySet(object):
         except KeyError:
             return default
 
+    def __nonzero__(self):
+        return bool(self.exact_set)
+
+    def __len__(self):
+        return len(self.exact_set)
+
 def _distance(str1, str2):
     distance = Levenshtein.distance(str1, str2)
     if len(str1) > len(str2):

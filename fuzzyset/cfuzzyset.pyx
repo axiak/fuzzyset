@@ -141,6 +141,12 @@ cdef class cFuzzySet:
                     for score, value in results
                     if score == results[0][0]]
 
+    def __len__(self):
+        return len(self.exact_set)
+
+    def __nonzero__(self):
+        return bool(self.exact_set)
+
     def get(self, object key, object default=None):
         try:
             return self[key]
