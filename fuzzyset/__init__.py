@@ -4,7 +4,7 @@ import operator
 import collections
 import Levenshtein
 
-__version__ = (0, 0, 6)
+__version__ = (0, 0, 7)
 
 _non_word_re = re.compile(r'[^\w, ]+')
 
