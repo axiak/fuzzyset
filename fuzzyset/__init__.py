@@ -4,7 +4,7 @@ import operator
 import collections
 import Levenshtein
 
-__version__ = (0, 0, 5)
+__version__ = (0, 0, 6)
 
 _non_word_re = re.compile(r'[^\w, ]+')
 
@@ -13,7 +13,7 @@ __all__ = ('FuzzySet',)
 class FuzzySet(object):
     " Fuzzily match a string "
     def __init__(self, iterable=(), gram_size_lower=2, gram_size_upper=3, use_levenshtein=True):
-        self.exact_set = set()
+        self.exact_set = {}
         self.match_dict = collections.defaultdict(list)
         self.items = {}
         self.use_levenshtein = use_levenshtein
@@ -25,27 +25,29 @@ class FuzzySet(object):
             self.add(value)
 
     def add(self, value):
-        value = value.lower()
-        if value in self.exact_set:
+        lvalue = value.lower()
+        if lvalue in self.exact_set:
             return False
         for i in range(self.gram_size_lower, self.gram_size_upper + 1):
             self.__add(value, i)
 
     def __add(self, value, gram_size):
+        lvalue = value.lower()
         items = self.items[gram_size]
         idx = len(items)
         items.append(0)
-        grams = _gram_counter(value, gram_size)
+        grams = _gram_counter(lvalue, gram_size)
         norm = math.sqrt(sum(x**2 for x in grams.values()))
         for gram, occ in grams.items():
             self.match_dict[gram].append((idx, occ))
-        items[idx] = (norm, value)
-        self.exact_set.add(value)
+        items[idx] = (norm, lvalue)
+        self.exact_set[lvalue] = value
 
     def __getitem__(self, value):
-        value = value.lower()
-        if value in self.exact_set:
-            return [(1, value)]
+        lvalue = value.lower()
+        result = self.exact_set.get(lvalue)
+        if result:
+            return [(1, result)]
         for i in range(self.gram_size_upper, self.gram_size_lower - 1, -1):
             results = self.__get(value, i)
             if results is not None:
@@ -53,8 +55,9 @@ class FuzzySet(object):
         raise KeyError(value)
 
     def __get(self, value, gram_size):
+        lvalue = value.lower()
         matches = collections.defaultdict(float)
-        grams = _gram_counter(value, gram_size)
+        grams = _gram_counter(lvalue, gram_size)
         items = self.items[gram_size]
         norm = math.sqrt(sum(x**2 for x in grams.values()))
 
@@ -71,12 +74,12 @@ class FuzzySet(object):
         results.sort(reverse=True, key=operator.itemgetter(0))
 
         if self.use_levenshtein:
-            results = [(_distance(matched, value), matched)
+            results = [(_distance(matched, lvalue), matched)
                        for _, matched in results[:50]]
             results.sort(reverse=True, key=operator.itemgetter(0))
 
-        return [result for result in results
-                if result[0] == results[0][0]]
+        return [(score, self.exact_set[lval]) for score, lval in results
+                if score == results[0][0]]
 
 
     def get(self, key, default=None):

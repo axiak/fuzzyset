@@ -7,7 +7,7 @@ import operator
 import collections
 import Levenshtein
 
-__version__ = (0, 0, 5)
+__version__ = (0, 0, 6)
 
 from libc.math cimport sqrt
 
@@ -16,7 +16,7 @@ cdef _non_word_re = re.compile(r'[^\w, ]+')
 cdef class cFuzzySet:
     " Fuzzily match a string "
 
-    cdef set exact_set
+    cdef dict exact_set
     cdef dict match_dict
     cdef dict items
     cdef int gram_size_lower
@@ -27,7 +27,7 @@ cdef class cFuzzySet:
         assert gram_size_upper < 4 and gram_size_upper > 0
         assert gram_size_lower < 4 and gram_size_lower > 0
         assert gram_size_lower <= gram_size_upper
-        self.exact_set = set()
+        self.exact_set = {}
         self.match_dict = {}
         self.items = {}
         cdef int i
@@ -41,9 +41,10 @@ cdef class cFuzzySet:
 
     def add(self, object in_val):
         value = _convert_val(in_val)
+        cdef unicode lvalue
         with cython.nonecheck(True):
-            value = value.lower()
-        if value in self.exact_set:
+            lvalue = value.lower()
+        if lvalue in self.exact_set:
             return
         cdef int i
         for i in range(self.gram_size_lower, self.gram_size_upper + 1):
@@ -51,10 +52,11 @@ cdef class cFuzzySet:
 
     @cython.nonecheck(False)
     cpdef _add(self, unicode value, int gram_size):
+        cdef unicode lvalue = value.lower()
         cdef list items = self.items[gram_size]
         cdef int idx = len(items)
         items.append(0)
-        cdef dict grams = _gram_counter(value, gram_size)
+        cdef dict grams = _gram_counter(lvalue, gram_size)
         cdef double total = 0
         cdef int i
         cdef int tmp
@@ -64,7 +66,7 @@ cdef class cFuzzySet:
                 tmp = values[i]
                 total += tmp * tmp
         cdef double norm = sqrt(total)
-        items[idx] = (norm, value)
+        items[idx] = (norm, lvalue)
         cdef tuple new_val
         for gram, occ in grams.items():
             new_val = (idx, occ)
@@ -72,16 +74,17 @@ cdef class cFuzzySet:
                 self.match_dict[gram].append(new_val)
             else:
                 self.match_dict[gram] = [new_val]
-        self.exact_set.add(value)
+        self.exact_set[lvalue] = value
 
     @cython.nonecheck(False)
     @cython.boundscheck(False)
     def __getitem__(self, object in_val):
         cdef unicode value = _convert_val(in_val)
+        cdef unicode lvalue
         with cython.nonecheck(True):
-            value = value.lower()
-        if value in self.exact_set:
-            return [(1, value)]
+            lvalue = value.lower()
+        if lvalue in self.exact_set:
+            return [(1, self.exact_set[lvalue])]
         cdef int i
         results = None
         for i in range(self.gram_size_upper, self.gram_size_lower - 1, -1):
@@ -93,8 +96,9 @@ cdef class cFuzzySet:
     @cython.nonecheck(False)
     @cython.boundscheck(False)
     cpdef _get(self, unicode value, int gram_size):
+        cdef unicode lvalue = value.lower()
         cdef dict matches = {}
-        cdef dict grams = _gram_counter(value, gram_size)
+        cdef dict grams = _gram_counter(lvalue, gram_size)
         cdef double norm = 0
         cdef int tmp
         cdef list values = grams.values()
@@ -129,10 +133,11 @@ cdef class cFuzzySet:
                        for _, matched in results[:50]]
             results.sort(reverse=True, key=operator.itemgetter(0))
 
-            return [result for result in results
-                    if result[0] == results[0][0]]
+            return [(score, self.exact_set[value])
+                    for score, value in results
+                    if score == results[0][0]]
         else:
-            return [(score / norm, value)
+            return [(score / norm, self.exact_set[value])
                     for score, value in results
                     if score == results[0][0]]
 
