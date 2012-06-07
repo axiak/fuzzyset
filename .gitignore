@@ -1,3 +1,4 @@
+*.egg/
 /cfuzzyset.so
 /fuzzyset/cfuzzyset.html
 /local

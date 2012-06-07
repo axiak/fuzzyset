@@ -46,7 +46,7 @@ if '--cython' in sys.argv:
 
 setup(
     name = "fuzzyset",
-    version = "0.0.4",
+    version = "0.0.5",
     author = "Michael Axiak",
     author_email = "mike@axiak.net",
     description = ("A simple python fuzzyset implementation."),
