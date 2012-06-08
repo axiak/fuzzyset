@@ -7,7 +7,7 @@ import operator
 import collections
 import Levenshtein
 
-__version__ = (0, 0, 9)
+__version__ = (0, 0, 10)
 
 from libc.math cimport sqrt
 
