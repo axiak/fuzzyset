@@ -1,5 +1,6 @@
 import os
 import sys
+import platform
 
 here = os.path.dirname(__file__)
 
@@ -12,6 +13,9 @@ def read(fname):
 extra_kwargs = {}
 
 ext_files = []
+
+if platform.python_implementation() != 'CPython':
+    sys.argv.append('--pure-python')
 
 if '--pure-python' not in sys.argv:
     try:
