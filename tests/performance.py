@@ -13,7 +13,7 @@ import cfuzzyset
 test_data = [[], 0]
 
 def run_tests():
-    print 'Building data structures...'
+    print('Building data structures...')
     structures = build_structures()
     results = {}
     names = {}
@@ -23,7 +23,7 @@ def run_tests():
         names[varname] = name
     lengths = (3, 6, 10, 15, 25, 50)
     num_tests = 5000
-    print 'Starting the timing tests...'
+    print('Starting the timing tests...')
     for length in lengths:
         test_data_l = [None] * num_tests
         test_data[0] = test_data_l
@@ -48,7 +48,7 @@ def run_tests():
                        [[name] + [results[varname][i] / num_tests for i, length in enumerate(lengths)]
                         for varname, name, _ in structures])
 
-    print table.draw()
+    print(table.draw())
 
 string = 'abcdefghjijklmnopqrstuvwxyz'
 
