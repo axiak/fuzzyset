@@ -120,9 +120,9 @@ def _other_test():
         for line in cities:
             result = f.get(line.strip())
             if result is None:
-                print "{}: Could not find".format(line.strip())
+                print("{}: Could not find".format(line.strip()))
             elif isinstance(result, list):
-                print "{}: {}".format(line.strip(), result)
+                print("{}: {}".format(line.strip(), result))
 
 if __name__ == '__main__':
     pass
