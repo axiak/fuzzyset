@@ -60,7 +60,7 @@ cdef class cFuzzySet:
         cdef double total = 0
         cdef int i
         cdef int tmp
-        cdef list values = grams.values()
+        cdef list values = list(grams.values())
         with cython.boundscheck(False):
             for i in range(len(values)):
                 tmp = values[i]
@@ -101,7 +101,7 @@ cdef class cFuzzySet:
         cdef dict grams = _gram_counter(lvalue, gram_size)
         cdef double norm = 0
         cdef int tmp
-        cdef list values = grams.values()
+        cdef list values = list(grams.values())
         for tmp in values:
             norm += tmp * tmp
         norm = sqrt(norm)
