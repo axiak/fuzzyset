@@ -111,7 +111,7 @@ def _iterate_grams(value, gram_size=2):
     simplified = '-' + _non_word_re.sub('', value.lower()) + '-'
     len_diff = gram_size - len(simplified)
     if len_diff > 0:
-        value += '-' * len_diff
+        simplified += '-' * len_diff
     for i in range(len(simplified) - gram_size + 1):
         yield simplified[i:i + gram_size]
 
