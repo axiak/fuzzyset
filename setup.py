@@ -20,7 +20,6 @@ if platform.python_implementation() != 'CPython':
 if '--pure-python' not in sys.argv:
     try:
         import Cython
-        sys.path.insert(0, os.path.join(here, 'fake_pyrex'))
     except ImportError:
         pass
 
