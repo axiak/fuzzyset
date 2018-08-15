@@ -37,8 +37,8 @@ class FuzzySet(object):
         idx = len(items)
         items.append(0)
         grams = _gram_counter(lvalue, gram_size)
-        norm = math.sqrt(sum(x**2 for x in grams.values()))
-        for gram, occ in grams.items():
+        norm = math.sqrt(sum(x**2 for x in list(grams.values())))
+        for gram, occ in list(grams.items()):
             self.match_dict[gram].append((idx, occ))
         items[idx] = (norm, lvalue)
         self.exact_set[lvalue] = value
@@ -59,9 +59,9 @@ class FuzzySet(object):
         matches = collections.defaultdict(float)
         grams = _gram_counter(lvalue, gram_size)
         items = self.items[gram_size]
-        norm = math.sqrt(sum(x**2 for x in grams.values()))
+        norm = math.sqrt(sum(x**2 for x in list(grams.values())))
 
-        for gram, occ in grams.items():
+        for gram, occ in list(grams.items()):
             for idx, other_occ in self.match_dict.get(gram, ()):
                 matches[idx] += occ * other_occ
 
@@ -70,7 +70,7 @@ class FuzzySet(object):
 
         # cosine similarity
         results = [(match_score / (norm * items[idx][0]), items[idx][1])
-                   for idx, match_score in matches.items()]
+                   for idx, match_score in list(matches.items())]
         results.sort(reverse=True, key=operator.itemgetter(0))
 
         if self.use_levenshtein:
@@ -88,7 +88,7 @@ class FuzzySet(object):
         except KeyError:
             return default
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self.exact_set)
 
     def __len__(self):
