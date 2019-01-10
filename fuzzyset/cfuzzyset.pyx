@@ -7,11 +7,12 @@ import operator
 import collections
 import Levenshtein
 
-__version__ = (0, 0, 14)
+__version__ = (0, 0, 16)
 
 from libc.math cimport sqrt
 
 cdef _non_word_re = re.compile(r'[^\w, ]+')
+
 
 cdef class cFuzzySet:
     " Fuzzily match a string "
@@ -38,6 +39,19 @@ cdef class cFuzzySet:
         self.use_levenshtein = use_levenshtein
         for value in iterable:
             self.add(value)
+
+    def __reduce__(self):
+        return (
+            _pickle_creator,
+            (
+                self.exact_set,
+                self.match_dict,
+                self.items,
+                self.gram_size_lower,
+                self.gram_size_upper,
+                self.use_levenshtein
+            )
+        )
 
     def add(self, object in_val):
         value = _convert_val(in_val)
@@ -152,6 +166,20 @@ cdef class cFuzzySet:
             return self[key]
         except KeyError:
             return default
+
+
+def _pickle_creator(exact_set,
+                    match_dict,
+                    items,
+                    gram_size_lower,
+                    gram_size_upper,
+                    use_levenshtein):
+    result = cFuzzySet((), gram_size_lower, gram_size_upper, use_levenshtein)
+    result.match_dict = match_dict
+    result.exact_set = exact_set
+    result.items = items
+    return result
+
 
 @cython.boundscheck(False)
 cdef dict _gram_counter(unicode value, int gram_size=2):

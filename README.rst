@@ -105,7 +105,7 @@ the failure to match will be quick). Bigram searching will always be slower beca
 Install
 --------
 
-    ``easy_install fuzzyset``
+    ``pip install fuzzyset``
 
 
 License
