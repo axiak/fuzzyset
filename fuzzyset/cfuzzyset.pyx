@@ -23,11 +23,14 @@ cdef class cFuzzySet:
     cdef int gram_size_lower
     cdef int gram_size_upper
     cdef int use_levenshtein
+    cdef double rel_sim_cutoff
 
-    def __cinit__(self, iterable=(), int gram_size_lower=2, int gram_size_upper=3, int use_levenshtein=True):
+    def __cinit__(self, iterable=(), int gram_size_lower=2, int gram_size_upper=3, int use_levenshtein=True,
+                  double rel_sim_cutoff=1.0):
         assert gram_size_upper < 4 and gram_size_upper > 0
         assert gram_size_lower < 4 and gram_size_lower > 0
         assert gram_size_lower <= gram_size_upper
+        assert rel_sim_cutoff <= 1.0 and rel_sim_cutoff >= 0
         self.exact_set = {}
         self.match_dict = {}
         self.items = {}
@@ -37,6 +40,7 @@ cdef class cFuzzySet:
         self.gram_size_lower = gram_size_lower
         self.gram_size_upper = gram_size_upper
         self.use_levenshtein = use_levenshtein
+        self.rel_sim_cutoff = rel_sim_cutoff
         for value in iterable:
             self.add(value)
 
@@ -49,7 +53,8 @@ cdef class cFuzzySet:
                 self.items,
                 self.gram_size_lower,
                 self.gram_size_upper,
-                self.use_levenshtein
+                self.use_levenshtein,
+                self.rel_sim_cutoff
             )
         )
 
@@ -97,7 +102,7 @@ cdef class cFuzzySet:
         cdef unicode lvalue
         with cython.nonecheck(True):
             lvalue = value.lower()
-        if lvalue in self.exact_set:
+        if lvalue in self.exact_set and self.rel_sim_cutoff >= 1.0:
             return [(1, self.exact_set[lvalue])]
         cdef int i
         results = None
@@ -114,6 +119,7 @@ cdef class cFuzzySet:
         cdef dict matches = {}
         cdef dict grams = _gram_counter(lvalue, gram_size)
         cdef double norm = 0
+        cdef double score_threshold
         cdef int tmp
         cdef list values = list(grams.values())
         for tmp in values:
@@ -147,13 +153,15 @@ cdef class cFuzzySet:
                        for _, matched in results[:50]]
             results.sort(reverse=True, key=operator.itemgetter(0))
 
+            score_threshold = results[0][0] * self.rel_sim_cutoff
             return [(score, self.exact_set[value])
                     for score, value in results
-                    if score == results[0][0]]
+                    if score >= score_threshold]
         else:
+            score_threshold = results[0][0] * self.rel_sim_cutoff
             return [(score / norm, self.exact_set[value])
                     for score, value in results
-                    if score == results[0][0]]
+                    if score == score_threshold]
 
     def __len__(self):
         return len(self.exact_set)
@@ -173,8 +181,9 @@ def _pickle_creator(exact_set,
                     items,
                     gram_size_lower,
                     gram_size_upper,
-                    use_levenshtein):
-    result = cFuzzySet((), gram_size_lower, gram_size_upper, use_levenshtein)
+                    use_levenshtein,
+                    rel_sim_cutoff):
+    result = cFuzzySet((), gram_size_lower, gram_size_upper, use_levenshtein, rel_sim_cutoff)
     result.match_dict = match_dict
     result.exact_set = exact_set
     result.items = items

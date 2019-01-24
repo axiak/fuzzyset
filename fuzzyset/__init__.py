@@ -10,15 +10,17 @@ _non_word_re = re.compile(r'[^\w, ]+')
 
 __all__ = ('FuzzySet',)
 
+
 class FuzzySet(object):
     " Fuzzily match a string "
-    def __init__(self, iterable=(), gram_size_lower=2, gram_size_upper=3, use_levenshtein=True):
+    def __init__(self, iterable=(), gram_size_lower=2, gram_size_upper=3, use_levenshtein=True, rel_sim_cutoff=1):
         self.exact_set = {}
         self.match_dict = collections.defaultdict(list)
         self.items = {}
         self.use_levenshtein = use_levenshtein
         self.gram_size_lower = gram_size_lower
         self.gram_size_upper = gram_size_upper
+        self.rel_sim_cutoff = rel_sim_cutoff
         for i in range(gram_size_lower, gram_size_upper + 1):
             self.items[i] = []
         for value in iterable:
@@ -46,7 +48,7 @@ class FuzzySet(object):
     def __getitem__(self, value):
         lvalue = value.lower()
         result = self.exact_set.get(lvalue)
-        if result:
+        if result and self.rel_sim_cutoff >= 1:
             return [(1, result)]
         for i in range(self.gram_size_upper, self.gram_size_lower - 1, -1):
             results = self.__get(value, i)
@@ -78,9 +80,9 @@ class FuzzySet(object):
                        for _, matched in results[:50]]
             results.sort(reverse=True, key=operator.itemgetter(0))
 
+        score_threshold = results[0][0] * min(1.0, self.rel_sim_cutoff)
         return [(score, self.exact_set[lval]) for score, lval in results
-                if score == results[0][0]]
-
+                if score >= score_threshold]
 
     def get(self, key, default=None):
         try:
@@ -94,6 +96,7 @@ class FuzzySet(object):
     def __len__(self):
         return len(self.exact_set)
 
+
 def _distance(str1, str2):
     distance = Levenshtein.distance(str1, str2)
     if len(str1) > len(str2):
@@ -101,11 +104,13 @@ def _distance(str1, str2):
     else:
         return 1 - float(distance) / len(str2)
 
+
 def _gram_counter(value, gram_size=2):
     result = collections.defaultdict(int)
     for value in _iterate_grams(value, gram_size):
         result[value] += 1
     return result
+
 
 def _iterate_grams(value, gram_size=2):
     simplified = '-' + _non_word_re.sub('', value.lower()) + '-'
@@ -115,6 +120,7 @@ def _iterate_grams(value, gram_size=2):
     for i in range(len(simplified) - gram_size + 1):
         yield simplified[i:i + gram_size]
 
+
 def _other_test():
     with open('./origin_cities') as cities:
         for line in cities:
@@ -123,6 +129,7 @@ def _other_test():
                 print("{}: Could not find".format(line.strip()))
             elif isinstance(result, list):
                 print("{}: {}".format(line.strip(), result))
+
 
 if __name__ == '__main__':
     pass
