@@ -59,7 +59,7 @@ setup(
     url = "https://github.com/axiak/fuzzyset/",
     packages=['fuzzyset'],
     long_description=read('README.rst'),
-    install_requires=['python-levenshtein', 'texttable'],
+    install_requires=['pyxDamerauLevenshtein', 'texttable'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: BSD License",
