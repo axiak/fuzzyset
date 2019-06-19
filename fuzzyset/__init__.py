@@ -2,7 +2,7 @@ import re
 import math
 import operator
 import collections
-import Levenshtein
+import pyxDamerauLevenshtein
 
 __version__ = (0, 0, 18)
 
@@ -98,7 +98,7 @@ class FuzzySet(object):
 
 
 def _distance(str1, str2):
-    distance = Levenshtein.distance(str1, str2)
+    distance = pyxdameraulevenshtein.damerau_levenshtein_distance(str1, str2)
     if len(str1) > len(str2):
         return 1 - float(distance) / len(str1)
     else:
