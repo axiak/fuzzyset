@@ -2,8 +2,8 @@ name: release
 
 on:
   push:
-    #tags:
-    #  - v*
+    tags:
+      - v*
 
 jobs:
 
@@ -269,4 +269,4 @@ jobs:
       run: |
         ls -l dist/*
         pip install twine
-        twine check dist/*
+        twine upload dist/*
