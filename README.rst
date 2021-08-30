@@ -110,7 +110,7 @@ the failure to match will be quick). Bigram searching will always be slower beca
 Install
 --------
 
-    ``pip install fuzzyset``
+    ``pip install fuzzyset2``
 
 
 License
@@ -121,4 +121,5 @@ BSD
 Author
 --------
 
-Mike Axiak <mike@axiak.net>
+-  Mike Axiak <mike@axiak.net>
+-  Adrian Altenhoff <adrian.altenhoff@inf.ethz.ch>

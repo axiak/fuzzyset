@@ -56,7 +56,7 @@ setup(
     url="https://github.com/alpae/fuzzyset/",
     packages=['fuzzyset'],
     long_description=read('README.rst'),
-    long_description_content_type="text/rst",
+    long_description_content_type="text/x-rst",
     install_requires=['python-levenshtein'],
     extra_requires={"test": ["texttable"]},
     classifiers=[
