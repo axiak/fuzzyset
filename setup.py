@@ -4,25 +4,22 @@ import platform
 
 here = os.path.dirname(__file__)
 
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-#if sys.version_info[0] < 3 and sys.version_info[1] < 7:
-#    requirements.append('importlib')
 
 extra_kwargs = {}
-
 ext_files = []
+
+__version__ = "Undefined"
+with open("fuzzyset/__init__.py") as fh:
+    for line in fh:
+        if line.startswith("__version__"):
+            exec(line.strip())
 
 if platform.python_implementation() != 'CPython':
     sys.argv.append('--pure-python')
-
-if '--pure-python' not in sys.argv:
-    try:
-        import Cython
-        sys.path.insert(0, os.path.join(here, 'fake_pyrex'))
-    except ImportError:
-        pass
 
 from setuptools import setup, Extension
 
@@ -49,17 +46,19 @@ if '--cython' in sys.argv:
     sys.argv.remove('--cython')
 
 setup(
-    name = "fuzzyset",
-    version = "0.0.18",
-    author = "Michael Axiak",
-    author_email = "mike@axiak.net",
-    description = ("A simple python fuzzyset implementation."),
-    license = "BSD",
-    keywords = "fuzzyset fuzzy data structure",
-    url = "https://github.com/axiak/fuzzyset/",
+    name="fuzzyset2",
+    version=__version__,
+    author="Michael Axiak, Adrian Altenhoff",
+    author_email="adrian.altenhoff@inf.ethz.ch",
+    description=("A simple python fuzzyset implementation."),
+    license="BSD",
+    keywords="fuzzyset fuzzy data structure",
+    url="https://github.com/alpae/fuzzyset/",
     packages=['fuzzyset'],
     long_description=read('README.rst'),
-    install_requires=['python-levenshtein', 'texttable'],
+    long_description_content_type="text/rst",
+    install_requires=['python-levenshtein'],
+    extra_requires={"test": ["texttable"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: BSD License",

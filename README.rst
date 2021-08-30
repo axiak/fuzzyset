@@ -2,6 +2,11 @@
 fuzzyset - A fuzzy string set for python.
 ===========================================
 
+.. note::
+
+   This is a fork of the currently unmaintained `fuzzyset package <https://github.com/axiak/fuzzyset>`_ package by
+   Mike Axiak. This fork is available on PyPi as `fuzzyset2 <https://pypi.org/project/fuzzyset2>`_.
+
 fuzzyset is a data structure that performs something akin to fulltext search
 against data to determine likely mispellings and approximate string matching.
 

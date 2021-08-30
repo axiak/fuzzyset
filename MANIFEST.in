@@ -3,4 +3,3 @@ include cities.gz
 include fuzzyset/cfuzzyset.c
 recursive-include fuzzyset *
 recursive-include tests *
-recursive-include fake_pyrex *
