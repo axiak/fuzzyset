@@ -2,8 +2,14 @@
 fuzzyset - A fuzzy string set for python.
 ===========================================
 
+Note
+----
+
+   This is a maintained fork of the unfortunately no longer maintained `fuzzyset package <https://github.com/axiak/fuzzyset>`_ package by
+   Mike Axiak. This fork is available on PyPi as `fuzzyset2 <https://pypi.org/project/fuzzyset2>`_.
+
 fuzzyset is a data structure that performs something akin to fulltext search
-against data to determine likely mispellings and approximate string matching.
+against data to determine likely misspellings and approximate string matching.
 
 Usage
 -----
@@ -105,7 +111,15 @@ the failure to match will be quick). Bigram searching will always be slower beca
 Install
 --------
 
-    ``pip install fuzzyset``
+``pip install fuzzyset2``
+
+Afterwards, you can import the package simply with::
+
+    try:
+        from cfuzzyset import cFuzzySet as FuzzySet
+    except ImportError:
+        from fuzzyset import FuzzySet
+
 
 
 License
@@ -116,4 +130,5 @@ BSD
 Author
 --------
 
-Mike Axiak <mike@axiak.net>
+-  Mike Axiak <mike@axiak.net>
+-  Adrian Altenhoff <adrian.altenhoff@inf.ethz.ch>
