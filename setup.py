@@ -58,7 +58,7 @@ setup(
     long_description=read('README.rst'),
     long_description_content_type="text/x-rst",
     install_requires=['python-levenshtein'],
-    extra_requires={"test": ["texttable"]},
+    test_require=["texttable", "pytest"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: BSD License",

@@ -13,7 +13,7 @@ __all__ = ('FuzzySet',)
 
 
 class FuzzySet(object):
-    " Fuzzily match a string "
+    """ Fuzzily match a string """
     def __init__(self, iterable=(), gram_size_lower=2, gram_size_upper=3, use_levenshtein=True, rel_sim_cutoff=1):
         self.exact_set = {}
         self.match_dict = collections.defaultdict(list)
