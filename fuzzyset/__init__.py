@@ -122,16 +122,5 @@ def _iterate_grams(value, gram_size=2):
         yield simplified[i:i + gram_size]
 
 
-def _other_test():
-    with open('./origin_cities') as cities:
-        for line in cities:
-            result = f.get(line.strip())
-            if result is None:
-                print("{}: Could not find".format(line.strip()))
-            elif isinstance(result, list):
-                print("{}: {}".format(line.strip(), result))
-
-
 if __name__ == '__main__':
     pass
-    #_other_test()
