@@ -5,20 +5,24 @@ on:
     tags:
       - v*
 
+
 jobs:
 
-  build-linux-cp36:
+  build-linux:
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
+    strategy:
+      matrix:
+        python-version: [ 3.6, 3.7, 3.8, 3.9 ]
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
 
     - name: Install Python package dependencies
-      run: /opt/python/cp36-cp36m/bin/python -m pip install cython wheel
+      run: python${{ matrix.python-version }} -m pip install --upgrade setuptools cython wheel build
 
     - name: Build binary wheel
-      run: /opt/python/cp36-cp36m/bin/python setup.py bdist_wheel
+      run: python${{ matrix.python-version }} -m build --wheel
 
     - name: Apply auditwheel
       run: auditwheel repair -w dist dist/*
@@ -27,84 +31,9 @@ jobs:
       run: rm dist/*-linux_x86_64.whl
 
     - name: Archive dist artifacts
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
-        name: dist-linux-3.6
-        path: dist
-
-  build-linux-cp37:
-    runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
-
-    steps:
-    - uses: actions/checkout@master
-
-    - name: Install Python package dependencies
-      run: /opt/python/cp37-cp37m/bin/python -m pip install cython wheel
-
-    - name: Build binary wheel
-      run: /opt/python/cp37-cp37m/bin/python setup.py bdist_wheel
-
-    - name: Apply auditwheel
-      run: auditwheel repair -w dist dist/*
-
-    - name: Remove linux wheel
-      run: rm dist/*-linux_x86_64.whl
-
-    - name: Archive dist artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: dist-linux-3.7
-        path: dist
-
-  build-linux-cp38:
-    runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
-
-    steps:
-    - uses: actions/checkout@master
-
-    - name: Install Python package dependencies
-      run: /opt/python/cp38-cp38/bin/python -m pip install cython wheel
-
-    - name: Build binary wheel
-      run: /opt/python/cp38-cp38/bin/python setup.py bdist_wheel
-
-    - name: Apply auditwheel for manylinux wheel
-      run: auditwheel repair -w dist dist/*
-
-    - name: Remove linux wheel
-      run: rm dist/*-linux_x86_64.whl
-
-    - name: Archive dist artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: dist-linux-3.8
-        path: dist
-
-  build-linux-cp39:
-    runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
-
-    steps:
-    - uses: actions/checkout@master
-
-    - name: Install Python package dependencies
-      run: /opt/python/cp39-cp39/bin/python -m pip install cython wheel
-
-    - name: Build binary wheel
-      run: /opt/python/cp39-cp39/bin/python setup.py bdist_wheel
-
-    - name: Apply auditwheel
-      run: auditwheel repair -w dist dist/*
-
-    - name: Remove linux wheel
-      run: rm dist/*-linux_x86_64.whl
-
-    - name: Archive dist artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: dist-linux-3.9
+        name: dist-linux-${{ matrix.python-version }}
         path: dist
 
 
@@ -116,7 +45,7 @@ jobs:
         python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
 
     - name: Set up Python ${{ matrix.python-version }} x64
       uses: actions/setup-python@v1
@@ -125,13 +54,13 @@ jobs:
         architecture: x64
 
     - name: Install Python package dependencies
-      run: pip install cython wheel
+      run: pip install --upgrade setuptools cython wheel build
 
     - name: Build binary wheel
-      run: python setup.py bdist_wheel
+      run: python -m build --wheel
 
     - name: Archive dist artifacts
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: dist-macos-${{ matrix.python-version }}
         path: dist
@@ -144,7 +73,7 @@ jobs:
         python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
 
     - name: Download Build Tools for Visual Studio 2019
       run: Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_buildtools.exe -OutFile vs_buildtools.exe
@@ -159,113 +88,45 @@ jobs:
         architecture: x64
 
     - name: Install Python package dependencies
-      run: pip install cython wheel
+      run: pip install --upgrade setuptools cython wheel build
 
     - name: Build binary wheel
-      run: python setup.py bdist_wheel
+      run: python -m build --wheel
 
     - name: Archive dist artifacts
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: dist-windows-${{ matrix.python-version }}
         path: dist
 
   upload:
-    needs: [build-linux-cp36, build-linux-cp37, build-linux-cp38, build-linux-cp39, build-macos, build-windows]
+    needs: [build-linux, build-macos, build-windows]
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.x
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip setuptools cython
+        python -m pip install --upgrade pip setuptools cython build wheel
 
     - name: Create source dist
-      run: python setup.py sdist
+      run: python -m build --sdist
 
-    - name: Stage linux 3.6
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-linux-3.6
-    - run: mv -v dist-linux-3.6/* dist/
+    - name: Stage artifacts
+      uses: actions/download-artifact@v2
 
-    - name: Stage linux 3.7
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-linux-3.7
-    - run: mv -v dist-linux-3.7/* dist/
-
-    - name: Stage linux 3.8
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-linux-3.8
-    - run: mv -v dist-linux-3.8/* dist/
-    
-    - name: Stage linux 3.9
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-linux-3.9
-    - run: mv -v dist-linux-3.9/* dist/
-
-    - name: Stage macos 3.6
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-macos-3.6
-    - run: mv -v dist-macos-3.6/* dist/
-
-    - name: Stage macos 3.7
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-macos-3.7
-    - run: mv -v dist-macos-3.7/* dist/
-
-    - name: Stage macos 3.8
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-macos-3.8
-    - run: mv -v dist-macos-3.8/* dist/
-    
-    - name: Stage macos 3.9
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-macos-3.9
-    - run: mv -v dist-macos-3.9/* dist/
-
-    - name: Stage windows 3.6
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-windows-3.6
-    - run: mv -v dist-windows-3.6/* dist/
-
-    - name: Stage windows 3.7
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-windows-3.7
-    - run: mv -v dist-windows-3.7/* dist/
-
-    - name: Stage windows 3.8
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-windows-3.8
-    - run: mv -v dist-windows-3.8/* dist/
-
-    - name: Stage windows 3.9
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-windows-3.9
-    - run: mv -v dist-windows-3.9/* dist/
+    - name: collect all wheels in single dist/ folder
+      run: mv dist-*/*whl dist/
 
     - name: Upload with twine
-      env:
-        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      run: |
-        ls -l dist/*
-        pip install twine
-        twine upload dist/*
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: ${{ secrets.TWINE_USERNAME }}
+        password: ${{ secrets.TWINE_PASSWORD }}
+
