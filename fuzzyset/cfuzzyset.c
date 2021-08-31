@@ -4090,7 +4090,7 @@ static PyObject *__pyx_f_9cfuzzyset_9cFuzzySet__get(struct __pyx_obj_9cfuzzyset_
  *         results.sort(reverse=True, key=operator.itemgetter(0))
  * 
  *         if self.use_levenshtein:             # <<<<<<<<<<<<<<
- *             results = [(distance(matched, value), matched)
+ *             results = [(distance(matched, lvalue), matched)
  *                        for _, matched in results[:50]]
  */
   __pyx_t_13 = (__pyx_v_self->use_levenshtein != 0);
@@ -4099,7 +4099,7 @@ static PyObject *__pyx_f_9cfuzzyset_9cFuzzySet__get(struct __pyx_obj_9cfuzzyset_
     /* "cfuzzyset.pyx":152
  * 
  *         if self.use_levenshtein:
- *             results = [(distance(matched, value), matched)             # <<<<<<<<<<<<<<
+ *             results = [(distance(matched, lvalue), matched)             # <<<<<<<<<<<<<<
  *                        for _, matched in results[:50]]
  *             results.sort(reverse=True, key=operator.itemgetter(0))
  */
@@ -4108,7 +4108,7 @@ static PyObject *__pyx_f_9cfuzzyset_9cFuzzySet__get(struct __pyx_obj_9cfuzzyset_
 
     /* "cfuzzyset.pyx":153
  *         if self.use_levenshtein:
- *             results = [(distance(matched, value), matched)
+ *             results = [(distance(matched, lvalue), matched)
  *                        for _, matched in results[:50]]             # <<<<<<<<<<<<<<
  *             results.sort(reverse=True, key=operator.itemgetter(0))
  * 
@@ -4179,12 +4179,12 @@ static PyObject *__pyx_f_9cfuzzyset_9cFuzzySet__get(struct __pyx_obj_9cfuzzyset_
       /* "cfuzzyset.pyx":152
  * 
  *         if self.use_levenshtein:
- *             results = [(distance(matched, value), matched)             # <<<<<<<<<<<<<<
+ *             results = [(distance(matched, lvalue), matched)             # <<<<<<<<<<<<<<
  *                        for _, matched in results[:50]]
  *             results.sort(reverse=True, key=operator.itemgetter(0))
  */
       if (!(likely(PyUnicode_CheckExact(__pyx_v_matched))||((__pyx_v_matched) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_v_matched)->tp_name), 0))) __PYX_ERR(0, 152, __pyx_L1_error)
-      __pyx_t_1 = PyFloat_FromDouble(__pyx_f_9cfuzzyset_distance(((PyObject*)__pyx_v_matched), __pyx_v_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
+      __pyx_t_1 = PyFloat_FromDouble(__pyx_f_9cfuzzyset_distance(((PyObject*)__pyx_v_matched), __pyx_v_lvalue)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 152, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
@@ -4199,7 +4199,7 @@ static PyObject *__pyx_f_9cfuzzyset_9cFuzzySet__get(struct __pyx_obj_9cfuzzyset_
 
       /* "cfuzzyset.pyx":153
  *         if self.use_levenshtein:
- *             results = [(distance(matched, value), matched)
+ *             results = [(distance(matched, lvalue), matched)
  *                        for _, matched in results[:50]]             # <<<<<<<<<<<<<<
  *             results.sort(reverse=True, key=operator.itemgetter(0))
  * 
@@ -4210,7 +4210,7 @@ static PyObject *__pyx_f_9cfuzzyset_9cFuzzySet__get(struct __pyx_obj_9cfuzzyset_
     __pyx_t_5 = 0;
 
     /* "cfuzzyset.pyx":154
- *             results = [(distance(matched, value), matched)
+ *             results = [(distance(matched, lvalue), matched)
  *                        for _, matched in results[:50]]
  *             results.sort(reverse=True, key=operator.itemgetter(0))             # <<<<<<<<<<<<<<
  * 
@@ -4412,7 +4412,7 @@ static PyObject *__pyx_f_9cfuzzyset_9cFuzzySet__get(struct __pyx_obj_9cfuzzyset_
  *         results.sort(reverse=True, key=operator.itemgetter(0))
  * 
  *         if self.use_levenshtein:             # <<<<<<<<<<<<<<
- *             results = [(distance(matched, value), matched)
+ *             results = [(distance(matched, lvalue), matched)
  *                        for _, matched in results[:50]]
  */
   }

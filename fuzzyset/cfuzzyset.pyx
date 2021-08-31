@@ -149,7 +149,7 @@ cdef class cFuzzySet:
         results.sort(reverse=True, key=operator.itemgetter(0))
 
         if self.use_levenshtein:
-            results = [(distance(matched, value), matched)
+            results = [(distance(matched, lvalue), matched)
                        for _, matched in results[:50]]
             results.sort(reverse=True, key=operator.itemgetter(0))
 
