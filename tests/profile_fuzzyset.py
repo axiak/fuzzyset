@@ -8,15 +8,18 @@ import pstats, cProfile
 
 here = os.path.dirname(__file__)
 
-from cfuzzyset import cFuzzySet as FuzzySet
-#from fuzzyset import FuzzySet
+from cfuzzyset import cFuzzySet
+from fuzzyset import FuzzySet
 
 checks = [''.join(random.choice(string.ascii_lowercase) for _ in range(5))
           for _ in range(200)]
 
 
-def run_profile():
-    f = FuzzySet()
+def run_profile(impl):
+    if impl == "cFuzzySet":
+        f = cFuzzySet()
+    else:
+        f = FuzzySet()
     with gzip.GzipFile(os.path.join(here, '..', 'cities.gz')) as input_file:
         for line in input_file:
             f.add(line.rstrip().decode())
@@ -33,4 +36,5 @@ def profiler(f):
 
 
 if __name__ == '__main__':
-    run_profile()
+    run_profile('cFuzzySet')
+    run_profile('fuzzyset')
