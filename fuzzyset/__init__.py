@@ -4,7 +4,8 @@ import operator
 import collections
 import Levenshtein
 
-__version__ = (0, 0, 18)
+__version__ = "0.1.1"
+__version_info__ = tuple(__version__.split("."))
 
 _non_word_re = re.compile(r'[^\w, ]+')
 
@@ -12,7 +13,7 @@ __all__ = ('FuzzySet',)
 
 
 class FuzzySet(object):
-    " Fuzzily match a string "
+    """ Fuzzily match a string """
     def __init__(self, iterable=(), gram_size_lower=2, gram_size_upper=3, use_levenshtein=True, rel_sim_cutoff=1):
         self.exact_set = {}
         self.match_dict = collections.defaultdict(list)
@@ -121,16 +122,5 @@ def _iterate_grams(value, gram_size=2):
         yield simplified[i:i + gram_size]
 
 
-def _other_test():
-    with open('./origin_cities') as cities:
-        for line in cities:
-            result = f.get(line.strip())
-            if result is None:
-                print("{}: Could not find".format(line.strip()))
-            elif isinstance(result, list):
-                print("{}: {}".format(line.strip(), result))
-
-
 if __name__ == '__main__':
     pass
-    #_other_test()
