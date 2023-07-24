@@ -161,7 +161,7 @@ cdef class cFuzzySet:
             score_threshold = results[0][0] * self.rel_sim_cutoff
             return [(score / norm, self.exact_set[value])
                     for score, value in results
-                    if score == score_threshold]
+                    if score >= score_threshold]
 
     def __len__(self):
         return len(self.exact_set)
