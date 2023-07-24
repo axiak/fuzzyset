@@ -4,7 +4,7 @@ import operator
 import collections
 import Levenshtein
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __version_info__ = tuple(__version__.split("."))
 
 _non_word_re = re.compile(r'[^\w, ]+')

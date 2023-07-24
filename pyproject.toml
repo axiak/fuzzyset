@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "fuzzyset"
+version = "0.1.2"
+description = ""
+authors = ["Mike Axiak <mike@axiak.net>"]
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+python-Levenshtein = "^0.21.1"
+twine = "^4.0.2"
+
+[tool.poetry.group.dev.dependencies]
+texttable = "^1.6.7"
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
