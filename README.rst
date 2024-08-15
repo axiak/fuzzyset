@@ -105,7 +105,7 @@ the failure to match will be quick). Bigram searching will always be slower beca
 Install
 --------
 
-``pip install fuzzyset2``
+``pip install fuzzyset``
 
 Afterwards, you can import the package simply with::
 
